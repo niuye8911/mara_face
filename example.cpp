@@ -261,9 +261,9 @@ int main(int argc, const char **argv) {
   // load cascade XML files
   CascadeClassifier face_cascade, eye_cascade;
   face_cascade.load(
-      "/home/liuliu/Research/mara_bench/face-detect/req/face_cascade.xml");
+      "/home/liuliu/Research/mara_bench/mara_face/req/face_cascade.xml");
   eye_cascade.load(
-      "/home/liuliu/Research/mara_bench/face-detect/req/eye_cascade.xml");
+      "/home/liuliu/Research/mara_bench/mara_face/req/eye_cascade.xml");
 
   std::vector<string> image_list;
   read_images(image_list);
@@ -286,7 +286,7 @@ int main(int argc, const char **argv) {
     cout << image_list[i] << '\n';
 
     // load image
-    image = imread("/home/liuliu/Research/mara_bench/face-detect/" +
+    image = imread("/home/liuliu/Research/mara_bench/mara_face/" +
                    image_list[i] + ".jpg");
 
     // define output location

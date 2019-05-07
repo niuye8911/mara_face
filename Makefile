@@ -1,16 +1,17 @@
-CXX ?= g++
+CXX = g++-7
 
-RSDGPREFIX =/home/liuliu/Research/rapidlib-linux/cppSource/build 
-CXXFLAGS += -c -Wall $(shell pkg-config --cflags opencv) -std=c++11
+RSDGPREFIX =/home/liuliu/Research/rapidlib-linux/cppSource 
+CXXFLAGS += -w $(shell pkg-config --cflags opencv) -std=c++11
 LDFLAGS += $(shell pkg-config --libs --static opencv) -lcurl -pthread
-INCLUDE = -I/usr/local/include/opencv2 -I/home/liuliu/Research/rapidlib-linux/cppSource/ -I/usr/include/curl
+INCLUDE = -I/usr/local/include/opencv2 -I$(RSDGPREFIX) -I/usr/include/curl
 
+OBJ = example.o
 all: facedetect
 
-facedetect: example.o 
-	 $(CXX) -g $< /home/liuliu/Research/rapidlib-linux/cppSource/build/rsdg.a -o $@ $(LDFLAGS) $(INCLUDE)
+facedetect: $(OBJ) /home/liuliu/Research/rapidlib-linux/cppSource/build/rsdg.a 
+	 $(CXX) $(CXXFLAGS) $(OBJ) /home/liuliu/Research/rapidlib-linux/cppSource/build/rsdg.a -o $@ $(LDFLAGS) $(INCLUDE)
 
-%.o: %.cpp
-	 $(CXX) $< -g -o $@ $(CXXFLAGS) $(INCLUDE) $(LDFLAGS)
+.cpp.o:  
+	$(CXX) $(CXXFLAGS) -c $*.cpp $(INCLUDE) -o $*.o
 
 clean: ; rm -f example.o opencv_example
