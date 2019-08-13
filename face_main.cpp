@@ -171,7 +171,8 @@ void *change_select_Num(void *arg) {
 }
 
 void setupMission() {
-  faceMission = new rsdgMission();
+  string name = "facedetect";
+  faceMission = new rsdgMission(name);
   pyramidPara = new rsdgPara();
   eyesPara = new rsdgPara();
   selectPara = new rsdgPara();
@@ -198,7 +199,8 @@ void setupMission() {
                               &change_select_Num, selectPara);
   faceMission->regContService("eyesNum", "eyes", &change_eyes_Num, eyesPara);
   faceMission->generateProb(XML_PATH);
-  faceMission->setSolver(rsdgMission::GUROBI, rsdgMission::LOCAL);
+  faceMission->setSolver(rsdgMission::GUROBI, rsdgMission::LOCAL,
+                         rsdgMission::RAPIDM);
   faceMission->setUnitBetweenCheckpoints(UNIT_PER_CHECK);
   faceMission->setBudget(totSec * 1000);
   faceMission->setUnit(totUnit);
