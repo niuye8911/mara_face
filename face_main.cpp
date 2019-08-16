@@ -308,6 +308,9 @@ int main(int argc, const char **argv) {
     if (RSDG)
       faceMission->finish_one_unit();
   }
+  if (RSDG){
+    faceMission->finish();
+  }
 
   result_file.close();
 
