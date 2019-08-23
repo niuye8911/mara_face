@@ -200,7 +200,7 @@ void setupMission() {
   faceMission->regContService("eyesNum", "eyes", &change_eyes_Num, eyesPara);
   faceMission->generateProb(XML_PATH);
   faceMission->setSolver(rsdgMission::GUROBI, rsdgMission::LOCAL,
-                         rsdgMission::RAPIDM);
+                         false);
   faceMission->setUnitBetweenCheckpoints(UNIT_PER_CHECK);
   faceMission->setBudget(totSec * 1000);
   faceMission->setUnit(totUnit);
