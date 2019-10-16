@@ -20,16 +20,12 @@ rsdgPara *pyramidPara;
 rsdgPara *selectPara;
 rsdgPara *eyesPara;
 bool RSDG = false;
-bool offline = false;
-int totSec;
 int totUnit;
-int UNIT_PER_CHECK = 5;
 int pyramid = 20;
 int selectivity = 2;
 int eyes = 0;
 string pic_index = "";
-string XML_PATH = "";
-
+string config_file = "";
 void setupMission(); // setup the rapid mission
 
 void read_images(std::vector<string> &image_list) {
@@ -171,8 +167,7 @@ void *change_select_Num(void *arg) {
 }
 
 void setupMission() {
-  string name = "facedetect";
-  faceMission = new rsdgMission(name);
+  faceMission = new rsdgMission(config_file,true);
   pyramidPara = new rsdgPara();
   eyesPara = new rsdgPara();
   selectPara = new rsdgPara();
@@ -198,17 +193,7 @@ void setupMission() {
   faceMission->regContService("selectivityNum", "selectivity",
                               &change_select_Num, selectPara);
   faceMission->regContService("eyesNum", "eyes", &change_eyes_Num, eyesPara);
-  faceMission->generateProb(XML_PATH);
-  faceMission->setSolver(rsdgMission::GUROBI, rsdgMission::LOCAL,
-                         false);
-  faceMission->setUnitBetweenCheckpoints(UNIT_PER_CHECK);
-  faceMission->setBudget(totSec * 1000);
   faceMission->setUnit(totUnit);
-  if (offline) {
-    faceMission->readCostProfile();
-    faceMission->readMVProfile();
-    faceMission->setOfflineSearch();
-  }
   faceMission->addConstraint("pyramidNum", true);
   faceMission->addConstraint("selectivityNum", true);
   faceMission->addConstraint("eyesNum", true);
@@ -242,22 +227,16 @@ int main(int argc, const char **argv) {
     for (int i = 1; i < argc; i++) {
       if (!strcmp(argv[i], "-index"))
         pic_index = argv[++i];
-      if (!strcmp(argv[i], "-rsdg"))
+      if (!strcmp(argv[i], "-rsdg")){
         RSDG = true;
-      if (!strcmp(argv[i], "-offline"))
-        offline = true;
-      if (!strcmp(argv[i], "-b"))
-        totSec = stoi(argv[++i]);
+        config_file=argv[++i];
+      }
       if (!strcmp(argv[i], "-p"))
         pyramid = stoi(argv[++i]);
       if (!strcmp(argv[i], "-s"))
         selectivity = stoi(argv[++i]);
       if (!strcmp(argv[i], "-e"))
         eyes = stoi(argv[++i]);
-      if (!strcmp(argv[i], "-xml"))
-        XML_PATH = argv[++i];
-      if (!strcmp(argv[i], "-u"))
-        UNIT_PER_CHECK = stoi(argv[++i]);
     }
   }
   // load cascade XML files
@@ -274,14 +253,11 @@ int main(int argc, const char **argv) {
   std::vector<Rect> faces;
   if (RSDG) {
     setupMission();
+    faceMission->start();
   }
 
   for (int i = 0; i < image_list.size(); i++) {
-    if (RSDG && i % UNIT_PER_CHECK == 0) {
-      faceMission->reconfig();
-      if (faceMission->isFailed())
-        break;
-    }
+
     // write the img name
     result_file << image_list[i].substr(5) << endl;
 
