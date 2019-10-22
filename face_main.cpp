@@ -261,8 +261,6 @@ int main(int argc, const char **argv) {
     // write the img name
     result_file << image_list[i].substr(5) << endl;
 
-    cout << image_list[i] << '\n';
-
     // load image
     image = imread("/home/liuliu/Research/mara_bench/mara_face/" +
                    image_list[i] + ".jpg");
